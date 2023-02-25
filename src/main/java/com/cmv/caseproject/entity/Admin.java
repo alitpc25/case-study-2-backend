@@ -1,8 +1,11 @@
 package com.cmv.caseproject.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Entity;
@@ -39,7 +42,9 @@ public class Admin implements UserDetails {
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		List<GrantedAuthority> authoritiesList = new ArrayList<>();
+		authoritiesList.add(new SimpleGrantedAuthority("ADMIN"));
+		return authoritiesList;
 	}
 	@Override
 	public boolean isAccountNonExpired() {

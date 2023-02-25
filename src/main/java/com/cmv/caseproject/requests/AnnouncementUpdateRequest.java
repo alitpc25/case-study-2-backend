@@ -1,7 +1,5 @@
 package com.cmv.caseproject.requests;
 
-import java.time.LocalDateTime;
-
 import org.springframework.web.multipart.MultipartFile;
 
 public class AnnouncementUpdateRequest {

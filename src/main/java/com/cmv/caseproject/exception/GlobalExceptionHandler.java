@@ -2,10 +2,11 @@ package com.cmv.caseproject.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 	   @ExceptionHandler(value = AnnouncementNotFoundException.class)
 	   public ResponseEntity<Object> announcementNotFoundHandler(AnnouncementNotFoundException exception) {
@@ -25,6 +26,11 @@ public class GlobalExceptionHandler {
 	   @ExceptionHandler(value = BadCredentialsException.class)
 	   public ResponseEntity<Object> badCredentialsHandler(BadCredentialsException exception) {
 	      return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	   }
+	   
+	   @ExceptionHandler(value = AuthenticationException.class)
+	   public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
+	      return new ResponseEntity<>(exception.getMessage(), HttpStatus.UNAUTHORIZED);
 	   }
 	   
 }

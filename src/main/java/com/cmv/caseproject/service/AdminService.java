@@ -2,6 +2,8 @@ package com.cmv.caseproject.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,16 @@ public class AdminService {
 		if(!passwordEncoder.matches(adminLoginRequest.getPassword(), admin.getPassword())) {
 			throw new BadCredentialsException("Wrong password");
 		}
-		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(adminLoginRequest.getUsername(), adminLoginRequest.getPassword()));
+		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(adminLoginRequest.getUsername(), adminLoginRequest.getPassword());
+		Authentication auth = authenticationManager.authenticate(authToken);
+		SecurityContextHolder.getContext().setAuthentication(auth);
 		String jwtToken = jwtService.generateToken(admin);
 		return new AdminLoginResponse(jwtToken);
+	}
+
+	public String logoutAdmin() {
+		SecurityContextHolder.getContext().setAuthentication(null);
+		return "Logged out.";
 	}
 
 }

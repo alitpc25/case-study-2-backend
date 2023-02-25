@@ -30,7 +30,6 @@ public class AppConfig {
 			
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				// Email cannot be updated, so we used it.
 				return adminService.getByUsername(username); // since our class User implements UserDetails.
 			}
 		};

@@ -12,6 +12,7 @@ import com.cmv.caseproject.entity.News;
 import com.cmv.caseproject.exception.NewsNotFoundException;
 import com.cmv.caseproject.repository.NewsRepository;
 import com.cmv.caseproject.requests.NewsCreateRequest;
+import com.cmv.caseproject.requests.NewsUpdateRequest;
 import com.cmv.caseproject.utils.NewsDtoConverter;
 
 @Service
@@ -43,6 +44,16 @@ public class NewsService {
 	public NewsDto getById(String id) {
 		News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
 		return newsDtoConverter.convertToDto(news);
+	}
+
+	public NewsDto updateNews(String id, NewsUpdateRequest request) {
+		News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+		news.setTopic(request.getTopic());
+		news.setContent(request.getContent());
+		LocalDateTime date = LocalDateTime.parse(request.getExpirationDate(), DateTimeFormatter.ISO_DATE_TIME);
+		news.setExpirationDate(date);
+		news.setLink(request.getLink());
+		return newsDtoConverter.convertToDto(newsRepository.save(news));
 	}
 
 }

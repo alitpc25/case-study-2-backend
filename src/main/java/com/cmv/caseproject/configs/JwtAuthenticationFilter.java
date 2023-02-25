@@ -32,10 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		final String authHeader = request.getHeader("Authorization");
 		final String jwtToken;
-		final String email;
+		final String username;
 		
 		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-			filterChain.doFilter(request, response); // In case jwt is not valid, return.
+			filterChain.doFilter(request, response);
 			return;
 		}
 		
@@ -45,11 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			
 			//To make sure that user exist, we should check it in UserDetailsService. So we need the user's data from jwtToken. Therefore
 			//first, we should extract the username from jwt token.
-			email = jwtService.extractUsername(jwtToken);
+			username = jwtService.extractUsername(jwtToken);
 			
-			if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				//We write own implementation of loadByUsername since we will fetch the user from our database.
-				UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 				if(jwtService.isTokenValid(jwtToken, userDetails)) {
 					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

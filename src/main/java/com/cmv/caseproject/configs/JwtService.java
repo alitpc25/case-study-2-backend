@@ -55,17 +55,17 @@ public class JwtService {
 		return Jwts
 				.builder()
 				.setClaims(extraClaims)
-				.setSubject(userDetails.getUsername()) // Our subject for token is email.
+				.setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*6))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
 	
 	public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
-		final String email = extractUsername(jwtToken);
+		final String username = extractUsername(jwtToken);
 		// We should look at UserDetails to see if the username subject equals to the username in UserDetails class provided by Spring security
-		return email.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken);
+		return username.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken);
 	}
 	
 	public boolean isTokenExpired(String jwtToken) {

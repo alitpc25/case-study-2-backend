@@ -16,10 +16,12 @@ public class SecurityConfig {
 	
 	private final JwtAuthenticationFilter jwtAuthFilter;
 	private final AuthenticationProvider authenticationProvider;
+	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 	
-	public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
+	public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider, JwtAuthenticationEntryPoint authenticationEntryPoint) {
 		this.jwtAuthFilter = jwtAuthFilter;
 		this.authenticationProvider = authenticationProvider;
+		this.authenticationEntryPoint = authenticationEntryPoint;
 	}
 
 	@Bean
@@ -36,9 +38,16 @@ public class SecurityConfig {
 		.permitAll()
 		.requestMatchers(HttpMethod.GET ,"/api/v1/news/**")
 		.permitAll()
-		.anyRequest()
+		.requestMatchers(HttpMethod.GET ,"/announcement-photos/**")
 		.permitAll()
+		.requestMatchers(HttpMethod.GET ,"/notify/**")
+		.permitAll()
+		.anyRequest()
+		.authenticated()
 		.and()
+        .exceptionHandling()
+        .authenticationEntryPoint(authenticationEntryPoint)
+        .and()
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless since we use JWT token 
 		.and()

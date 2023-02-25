@@ -5,15 +5,12 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,18 +45,13 @@ public class AnnouncementController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteAnnouncement(@PathVariable String id) {
+	public ResponseEntity<String> deleteAnnouncement(@PathVariable String id) throws IOException {
 		return new ResponseEntity<>(announcementService.deleteAnnouncement(id) ,HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{id}")
-	public ResponseEntity<AnnouncementDto> updateAnnouncement(@PathVariable String id, @RequestBody AnnouncementUpdateRequest request) throws IOException {
+	@ModelAttribute
+	public ResponseEntity<AnnouncementDto> updateAnnouncement(@PathVariable String id, AnnouncementUpdateRequest request) throws IOException {
 		return new ResponseEntity<>(announcementService.updateAnnouncement(id, request) ,HttpStatus.OK);
-	}
-	
-	@MessageMapping("/notify")
-	@SendTo("/topic/newNotifications")
-	public AnnouncementDto notify(String announcementId) {
-		return announcementService.notify(announcementId);
 	}
 }

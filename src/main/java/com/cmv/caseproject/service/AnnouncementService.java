@@ -48,7 +48,10 @@ public class AnnouncementService {
 	}
 
 
-	public String deleteAnnouncement(String id) {
+	public String deleteAnnouncement(String id) throws IOException {
+		Announcement announcement = announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
+		String uploadDir = "target/classes/static/announcement-photos/" + announcement.getId();
+		FileUploadUtil.deleteFile(uploadDir);
 		announcementRepository.deleteById(id);
 		return "Successfully deleted.";
 	}
@@ -63,8 +66,9 @@ public class AnnouncementService {
 
 		String uploadDir = "target/classes/static/announcement-photos/" + announcement.getId();
 		String imageFileName = StringUtils.cleanPath(request.getImage().getOriginalFilename());
+		announcement.setImage(imageFileName);
 		FileUploadUtil.updateFile(uploadDir, imageFileName, request.getImage());
-		return announcementDtoConverter.convertToDto(announcement);
+		return announcementDtoConverter.convertToDto(announcementRepository.save(announcement));
 	}
 
 

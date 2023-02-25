@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -21,6 +22,8 @@ public class Activity {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	private String topic;
+	
+	@Lob
 	private String content;
 	private LocalDateTime expirationDate;
 	public Activity(String topic, String content, LocalDateTime expirationDate) {

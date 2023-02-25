@@ -26,4 +26,9 @@ public class AdminController {
 		AdminLoginResponse adminLoginResponse = adminService.authenticateAdmin(adminLoginRequest);
     	return new ResponseEntity<>(adminLoginResponse, HttpStatus.OK);
     }
+	
+	@PostMapping("/logout")
+    public ResponseEntity<String> logoutAdmin() {
+    	return new ResponseEntity<>(adminService.logoutAdmin(), HttpStatus.OK);
+    }
 }

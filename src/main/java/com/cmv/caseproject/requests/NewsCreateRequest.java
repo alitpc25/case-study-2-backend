@@ -1,7 +1,5 @@
 package com.cmv.caseproject.requests;
 
-import java.time.LocalDateTime;
-
 public class NewsCreateRequest {
 	private String topic;
 	private String content;
