@@ -1,7 +1,7 @@
 package com.cmv.caseproject.entity;
 
 import java.time.LocalDateTime;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
@@ -25,7 +25,10 @@ public class Activity {
 	
 	@Lob
 	private String content;
+	
+	@Column(columnDefinition = "TIMESTAMP")
 	private LocalDateTime expirationDate;
+	
 	public Activity(String topic, String content, LocalDateTime expirationDate) {
 		this.topic = topic;
 		this.content = content;

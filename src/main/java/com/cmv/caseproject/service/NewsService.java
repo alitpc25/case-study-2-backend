@@ -42,18 +42,22 @@ public class NewsService {
 	}
 
 	public NewsDto getById(String id) {
-		News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+		News news = getByIdPriv(id);
 		return newsDtoConverter.convertToDto(news);
 	}
 
 	public NewsDto updateNews(String id, NewsUpdateRequest request) {
-		News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+		News news = getByIdPriv(id);
 		news.setTopic(request.getTopic());
 		news.setContent(request.getContent());
 		LocalDateTime date = LocalDateTime.parse(request.getExpirationDate(), DateTimeFormatter.ISO_DATE_TIME);
 		news.setExpirationDate(date);
 		news.setLink(request.getLink());
 		return newsDtoConverter.convertToDto(newsRepository.save(news));
+	}
+	
+	private News getByIdPriv(String id) {
+		return newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
 	}
 
 }

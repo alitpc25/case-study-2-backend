@@ -33,4 +33,8 @@ public class GlobalExceptionHandler {
 	      return new ResponseEntity<>(exception.getMessage(), HttpStatus.UNAUTHORIZED);
 	   }
 	   
+	   @ExceptionHandler(value = AdminNotFoundException.class)
+	   public ResponseEntity<Object> adminNotFoundHandler(AdminNotFoundException exception) {
+	      return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+	   }
 }

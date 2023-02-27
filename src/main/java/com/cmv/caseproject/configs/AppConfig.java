@@ -30,7 +30,7 @@ public class AppConfig {
 			
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return adminService.getByUsername(username); // since our class User implements UserDetails.
+				return adminService.getByUsername(username);
 			}
 		};
 	}

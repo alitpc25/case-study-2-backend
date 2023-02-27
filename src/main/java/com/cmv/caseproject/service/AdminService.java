@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cmv.caseproject.configs.JwtService;
+import com.cmv.caseproject.exception.AdminNotFoundException;
 import com.cmv.caseproject.exception.BadCredentialsException;
 import com.cmv.caseproject.repository.AdminRepository;
 import com.cmv.caseproject.requests.AdminLoginRequest;
@@ -30,7 +31,7 @@ public class AdminService {
 	}
 
 	public UserDetails getByUsername(String username) {
-		return adminRepository.findByUsername(username);
+		return adminRepository.findByUsername(username).orElseThrow(() -> new AdminNotFoundException("Wrong username."));
 	}
 
 	public AdminLoginResponse authenticateAdmin(AdminLoginRequest adminLoginRequest) {

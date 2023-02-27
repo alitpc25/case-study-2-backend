@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -29,11 +30,10 @@ public class AnnouncementService {
 		this.announcementDtoConverter = announcementDtoConverter;
 	}
 
-
 	public List<AnnouncementDto> getAll() {
-		return announcementRepository.findAll().stream().map(i -> announcementDtoConverter.convertToDto(i)).collect(Collectors.toList());
+		List<Announcement> announcementsSorted = announcementRepository.findAll(Sort.by(Sort.Direction.ASC, "expirationDate"));
+		return announcementsSorted.stream().map(i -> announcementDtoConverter.convertToDto(i)).collect(Collectors.toList());
 	}
-
 
 	public AnnouncementDto createAnnouncement(AnnouncementCreateRequest request) throws IOException {
 		String imageFileName = StringUtils.cleanPath(request.getImage().getOriginalFilename());
@@ -47,18 +47,16 @@ public class AnnouncementService {
         return announcementDtoConverter.convertToDto(announcement);
 	}
 
-
 	public String deleteAnnouncement(String id) throws IOException {
-		Announcement announcement = announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
+		Announcement announcement = getByIdPriv(id);
 		String uploadDir = "target/classes/static/announcement-photos/" + announcement.getId();
 		FileUploadUtil.deleteFile(uploadDir);
 		announcementRepository.deleteById(id);
 		return "Successfully deleted.";
 	}
 
-
 	public AnnouncementDto updateAnnouncement(String id, AnnouncementUpdateRequest request) throws IOException {
-		Announcement announcement = announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
+		Announcement announcement = getByIdPriv(id);
 		announcement.setTopic(request.getTopic());
 		announcement.setContent(request.getContent());
 		LocalDateTime date = LocalDateTime.parse(request.getExpirationDate(), DateTimeFormatter.ISO_DATE_TIME);
@@ -71,12 +69,13 @@ public class AnnouncementService {
 		return announcementDtoConverter.convertToDto(announcementRepository.save(announcement));
 	}
 
-
 	public AnnouncementDto getById(String id) {
-		Announcement announcement = announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
-		return announcementDtoConverter.convertToDto(announcement);
+		return announcementDtoConverter.convertToDto(getByIdPriv(id));
 	}
 
+	private Announcement getByIdPriv(String id) {
+		return announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
+	}
 
 	public AnnouncementDto notify(String announcementId) {
 		return getById(announcementId);
